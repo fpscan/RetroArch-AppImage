@@ -1,9 +1,15 @@
 
-name: RetroArch Nightly Build
+name: RetroArch Build
 
-on:
-  schedule:
-  - cron: "0 5 * * *" # build every night at midnight Eastern
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Reason'     
+        required: true
+        default: 'Release'
+      tags:
+        description: 'Tags' 
   watch: # this is a hack that lets repo owners trigger a build by starring
     types: [started]
     if: github.actor == github.event.repository.owner.login
@@ -61,12 +67,12 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: RetroArch-Linux-x86_64-Nightly.AppImage.config.7z
-        tag: Nightlies
+        tag: Assets
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage.config.7z
         overwrite: true
         
   Linux:
-    name: Build RetroArch Linux AppImage Nightly
+    name: Build RetroArch for Itch.io Linux / Nightly
     runs-on: ubuntu-latest
 
     steps:
@@ -86,12 +92,12 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: RetroArch-Linux-x86_64-Nightly.AppImage
-        tag: Nightlies
+        tag: Itch.io
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true
         
   Linux_LTS:
-    name: Build RetroArch LTS Linux AppImage Nightly
+    name: Build RetroArch Itch.io LTS Linux / Nightly
     runs-on: ubuntu-16.04
 
     steps:
@@ -111,12 +117,62 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: RetroArch-Linux-x86_64-Nightly.AppImage
-        tag: Linux_LTS_Nightlies
+        tag: Itch.io
+        asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
+        overwrite: true
+
+  Linux:
+    name: Build RetroArch for Steam Linux / Nightly
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch dependencies
+      run: sudo apt-get update ; sudo apt-get install libasound2-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev libc6-dev libdbus-1-dev libdrm-dev libegl1-mesa-dev libfreetype6-dev libgbm-dev libglm-dev libjack-jackd2-dev libopenal-dev libpulse-dev libsdl2-dev libswscale-dev libudev-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libxinerama-dev libxml2-dev libxv-dev libxxf86vm-dev pkg-config python3-dev qt5-default qtbase5-dev wayland-protocols x11proto-xext-dev zlib1g-dev
+    - name: Fetch linuxdeploy
+      run: wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage
+    - name: Fetch RetroArch source tree
+      run: git clone https://github.com/libretro/RetroArch.git
+    - name: Build RetroArch
+      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Check AppImage for common issues
+      run: wget https://github.com/TheAssassin/appimagelint/releases/download/continuous/appimagelint-x86_64.AppImage && chmod +x appimagelint-x86_64.AppImage && ./appimagelint-x86_64.AppImage RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Upload RetroArch AppImage
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: RetroArch-Linux-x86_64-Nightly.AppImage
+        tag: Steam
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true
         
+  Linux_LTS:
+    name: Build RetroArch Steam LTS Linux / Nightly
+    runs-on: ubuntu-16.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch dependencies
+      run: sudo apt-get update ; sudo apt-get install libasound2-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev libc6-dev libdbus-1-dev libdrm-dev libegl1-mesa-dev libfreetype6-dev libgbm-dev libglm-dev libjack-jackd2-dev libopenal-dev libpulse-dev libsdl2-dev libswscale-dev libudev-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libxinerama-dev libxml2-dev libxv-dev libxxf86vm-dev pkg-config python3-dev qt5-default qtbase5-dev wayland-protocols x11proto-xext-dev zlib1g-dev
+    - name: Fetch linuxdeploy
+      run: wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage
+    - name: Fetch RetroArch source tree
+      run: git clone https://github.com/libretro/RetroArch.git
+    - name: Build RetroArch
+      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Check AppImage for common issues
+      run: wget https://github.com/TheAssassin/appimagelint/releases/download/continuous/appimagelint-x86_64.AppImage && chmod +x appimagelint-x86_64.AppImage && ./appimagelint-x86_64.AppImage RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Upload RetroArch AppImage
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: RetroArch-Linux-x86_64-Nightly.AppImage
+        tag: Steam
+        asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
+        overwrite: true        
+        
   Windows:
-    name: Build RetroArch Nightly Windows
+    name: Build RetroArch Nightly for Itch.io Windows
     needs: Assets
     runs-on: windows-latest
 
@@ -227,6 +283,122 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        tag: Nightlies
+        tag: Itch.io
+        asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
+        overwrite: true
+
+  Windows:
+    name: Build RetroArch Nightly for Steam Windows
+    needs: Assets
+    runs-on: windows-latest
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          base-devel
+          git
+          wget
+          make
+          mingw-w64-x86_64-binutils
+          mingw-w64-x86_64-toolchain
+          mingw-w64-x86_64-ntldd
+          mingw-w64-x86_64-zlib
+          mingw-w64-x86_64-pkg-config
+          mingw-w64-x86_64-SDL2
+          mingw-w64-x86_64-libxml2
+          mingw-w64-x86_64-freetype
+          mingw-w64-x86_64-python3
+          mingw-w64-x86_64-ffmpeg
+          mingw-w64-x86_64-drmingw
+          mingw-w64-x86_64-qt5
+          mingw-w64-x86_64-openssl
+          unzip
+          p7zip
+    - uses: actions/checkout@v2
+    - name: Fetch the source
+      run: git clone https://github.com/libretro/RetroArch.git
+    - shell: msys2 {0}
+      working-directory: RetroArch
+      run: |
+        ./configure --enable-steam --disable-qt
+        make -j8
+    - name: Setup working dir
+      run: mkdir working_dir
+    - name: Gather Qt libs
+      working-directory: RetroArch
+      run: ForEach ($l in $(msys2 -c ntldd.exe -R 'imageformats/*dll' | grep mingw64 | sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}
+    - name: Gather the other libs
+      working-directory: RetroArch
+      run: ForEach ($l in $(msys2 -c ntldd.exe -R '*.exe'|grep mingw64|sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}   
+    - shell: msys2 {0}
+      working-directory: RetroArch/libretro-common/audio/dsp_filters
+      run: make
+    - shell: msys2 {0}
+      working-directory: RetroArch/gfx/video_filters
+      run: make
+#    - name: Free up some disk space
+#      working-directory: RetroArch
+#      run: rm -rf .git && pacman -Rsu --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl
+    - name: Create debug exe and strip regular exe
+      working-directory: RetroArch
+      run: cp retroarch.exe retroarch_debug.exe && strip.exe -s retroarch.exe
+    - name: Move executables to working dir (libs are already there)
+      working-directory: RetroArch
+      run: mv *.exe ../working_dir
+    - shell: msys2 {0}
+      working-directory: working_dir
+      run: windeployqt --debug --no-patchqt --no-translations retroarch.exe
+    - name: Zip just the executables and libs
+      working-directory: working_dir
+      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Update-Pack.7z *.exe *dll
+    - name: Upload Update Pack
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: working_dir/RetroArch-Win-x86_64-Nightly_Update-Pack.7z
+        tag: Steam
+        asset_name: RetroArch-Win-x86_64-Nightly_Update-Pack.7z
+        overwrite: true
+    - name: Download assets package from previous job
+      uses: actions/download-artifact@v2
+      with:
+        name: assets.7z
+    - shell: msys2 {0}
+      working-directory: working_dir
+      run: mv ../assets.7z ./ && 7z x assets.7z && rm -rf assets.7z RetroArch-Win-x86_64-Nightly_Update-Pack.7z filters/audio/*.so filters/video/*.so
+    - name: Copy filters to assets dir
+      run: mv RetroArch/libretro-common/audio/dsp_filters/*dll working_dir/filters/audio && mv RetroArch/gfx/video_filters/*dll working_dir/filters/video
+    - name: Zip the full release
+      working-directory: working_dir
+      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Full.7z *
+    - name: Upload RetroArch release bundle
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: working_dir/RetroArch-Win-x86_64-Nightly_Full.7z
+        tag: Steam
+        asset_name: RetroArch-Win-x86_64-Nightly_Full.7z
+        overwrite: true
+    - shell: msys2 {0}
+      run: rm -rf working_dir && mkdir RetroArch/angle
+#    - name: Reinstall necessary packages
+#      run: msys2do pacman -S --noconfirm --disable-download-timeout --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl    
+    - shell: msys2 {0}
+      working-directory: RetroArch
+      run: ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl && make
+    - name: Gather resources
+      working-directory: RetroArch/angle
+      run: mv ../retroarch_angle.exe ./ && mv ../pkg/windows/x86_64/libEGL.dll ./ && mv ../pkg/windows/x86_64/libGLESv2.dll ./
+    - name: Zip the ANGLE bundle
+      working-directory: RetroArch/angle
+      run: 7z a -mx=9 RetroArch-ANGLE-x86_64-Nightly_Add-on.7z *
+    - name: Upload ANGLE release bundle
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
+        tag: Steam
         asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
         overwrite: true

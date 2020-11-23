@@ -349,7 +349,7 @@ jobs:
       run: mv *.exe ../working_dir
     - shell: msys2 {0}
       working-directory: working_dir
-      run: windeployqt --debug --no-patchqt --no-translations retroarch.exe
+      run: windeployqt --release --no-patchqt --no-translations retroarch.exe
     - name: Zip just the executables and libs
       working-directory: working_dir
       run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Update-Pack.7z *.exe *dll

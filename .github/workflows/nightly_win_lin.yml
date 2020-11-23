@@ -134,7 +134,7 @@ jobs:
     - name: Fetch RetroArch source tree
       run: git clone https://github.com/libretro/RetroArch.git
     - name: Build RetroArch
-      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
+      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
     - name: Check AppImage for common issues
       run: wget https://github.com/TheAssassin/appimagelint/releases/download/continuous/appimagelint-x86_64.AppImage && chmod +x appimagelint-x86_64.AppImage && ./appimagelint-x86_64.AppImage RetroArch-Linux-x86_64-Nightly.AppImage
     - name: Upload RetroArch AppImage
@@ -159,7 +159,7 @@ jobs:
     - name: Fetch RetroArch source tree
       run: git clone https://github.com/libretro/RetroArch.git
     - name: Build RetroArch
-      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
+      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
     - name: Check AppImage for common issues
       run: wget https://github.com/TheAssassin/appimagelint/releases/download/continuous/appimagelint-x86_64.AppImage && chmod +x appimagelint-x86_64.AppImage && ./appimagelint-x86_64.AppImage RetroArch-Linux-x86_64-Nightly.AppImage
     - name: Upload RetroArch AppImage
@@ -387,7 +387,7 @@ jobs:
 #      run: msys2do pacman -S --noconfirm --disable-download-timeout --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl    
     - shell: msys2 {0}
       working-directory: RetroArch
-      run: ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl && make
+      run: ./configure --enable-angle --enable-dynamic_egl && make
     - name: Gather resources
       working-directory: RetroArch/angle
       run: mv ../retroarch_angle.exe ./ && mv ../pkg/windows/x86_64/libEGL.dll ./ && mv ../pkg/windows/x86_64/libGLESv2.dll ./

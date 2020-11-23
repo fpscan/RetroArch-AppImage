@@ -56,7 +56,7 @@ jobs:
         mv assets retroarch/
         mv overlays retroarch/
         mv autoconfig retroarch/
-        mv info retroarch/
+        mv info retroarch/cores
         mv shaders retroarch/
         mv filters retroarch/
         mkdir RetroArch-Linux-x86_64-Nightly.AppImage.config

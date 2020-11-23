@@ -71,7 +71,7 @@ jobs:
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage.config.7z
         overwrite: true
         
-  Linux_Itch.io:
+  Linux_Itch-io:
     name: Build RetroArch for Itch.io Linux / Nightly
     runs-on: ubuntu-latest
 
@@ -96,7 +96,7 @@ jobs:
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true
         
-  Linux_LTS_Itch.io:
+  Linux_LTS_Itch-io:
     name: Build RetroArch Itch.io LTS Linux / Nightly
     runs-on: ubuntu-16.04
 
@@ -171,7 +171,7 @@ jobs:
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true        
         
-  Windows_Itch.io:
+  Windows_Itch-io:
     name: Build RetroArch Nightly for Itch.io Windows
     needs: Assets
     runs-on: windows-latest

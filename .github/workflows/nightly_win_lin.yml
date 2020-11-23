@@ -323,7 +323,7 @@ jobs:
       working-directory: RetroArch
       run: |
         ./configure --enable-steam --disable-qt
-        make -j8
+        make -j4
     - name: Setup working dir
       run: mkdir working_dir
     - name: Gather Qt libs

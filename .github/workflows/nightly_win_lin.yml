@@ -54,11 +54,13 @@ jobs:
     - run: |
         mkdir retroarch
         mv assets retroarch/
-        mv overlays retroarch/
+        mv overlays retroarch/overlay
         mv autoconfig retroarch/
         mv info retroarch/cores
         mv shaders retroarch/
         mv filters retroarch/
+        mv database retroarch/
+        mv cheats retroarch/
         mkdir RetroArch-Linux-x86_64-Nightly.AppImage.config
         mv retroarch/ RetroArch-Linux-x86_64-Nightly.AppImage.config
         7z a -mx=9 RetroArch-Linux-x86_64-Nightly.AppImage.config.7z RetroArch-Linux-x86_64-Nightly.AppImage.config

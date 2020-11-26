@@ -59,7 +59,7 @@ jobs:
         mv info retroarch/cores
         mv shaders retroarch/
         mv filters retroarch/
-        mv database retroarch/
+        mkdir retroarch/database && mv database retroarch/database/rdb
         mv cheats retroarch/
         mkdir RetroArch-Linux-x86_64-Nightly.AppImage.config
         mv retroarch/ RetroArch-Linux-x86_64-Nightly.AppImage.config

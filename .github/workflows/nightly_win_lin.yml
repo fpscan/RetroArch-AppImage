@@ -85,7 +85,7 @@ jobs:
         mkdir cores
         cd cores
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/pcsx_rearmed_libretro.dll.zip && unzip -o pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro.dll.zip && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
-        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
     - name: Zip it up!
       run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' cores.7z *
     - name: Upload Windows assets bundle

@@ -72,9 +72,42 @@ jobs:
         tag: Assets
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage.config.7z
         overwrite: true
+
+  Playtest_Cores:
+    name: Collect and bundle available cores for Playtest
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: fetch cores
+      run: |
+        mkdir cores
+        cd cores
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/pcsx_rearmed_libretro.dll.zip && unzip -o pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro-SOURCE.txt && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && rm mesen_libretro-SOURCE.txt && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
+    - name: Zip it up!
+      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' cores.7z *
+    - name: Upload Windows assets bundle
+      uses: actions/upload-artifact@v2
+      with:
+        name: cores.7z
+        path: cores.7z
+    - run: |
+        mkdir retroarch
+        mv cores retroarch/
+        7z a -mx=9 cores.7z 
+    - name: Upload cores
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: cores.7z
+        tag: Playtest
+        asset_name: cores.7z
+        overwrite: true        
         
   Linux_Itch-io:
-    name: Build RetroArch for Itch.io Linux / Nightly
+    name: RetroArch Itch.io Nightly Linux
     runs-on: ubuntu-latest
 
     steps:
@@ -99,7 +132,7 @@ jobs:
         overwrite: true
         
   Linux_LTS_Itch-io:
-    name: Build RetroArch Itch.io LTS Linux / Nightly
+    name: RetroArch Itch.io Nightly LTS Linux
     runs-on: ubuntu-16.04
 
     steps:
@@ -124,7 +157,7 @@ jobs:
         overwrite: true
 
   Linux_Steam:
-    name: Build RetroArch for Steam Linux / Nightly
+    name: RetroArch Steam Nightly Linux
     runs-on: ubuntu-latest
 
     steps:
@@ -149,7 +182,7 @@ jobs:
         overwrite: true
         
   Linux_LTS_Steam:
-    name: Build RetroArch Steam LTS Linux / Nightly
+    name: RetroArch Steam Nightly LTS Linux
     runs-on: ubuntu-16.04
 
     steps:
@@ -174,7 +207,7 @@ jobs:
         overwrite: true        
         
   Windows:
-    name: Build RetroArch Nightly
+    name: RetroArch Itch.io Nightly
     needs: Assets
     runs-on: windows-latest
 
@@ -291,7 +324,7 @@ jobs:
         overwrite: true
 
   Windows_Steam:
-    name: Build RetroArch Nightly
+    name: RetroArch Steam Nightly
     needs: Assets
     runs-on: windows-latest
 
@@ -405,4 +438,121 @@ jobs:
         file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
         tag: Steam
         asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        overwrite: true        
+        overwrite: true
+
+Windows_Steam_Playtest:
+    name: RetroArch Playtest Steam Nightly
+    needs: Assets
+    runs-on: windows-latest
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          base-devel
+          git
+          wget
+          make
+          mingw-w64-x86_64-binutils
+          mingw-w64-x86_64-toolchain
+          mingw-w64-x86_64-ntldd
+          mingw-w64-x86_64-zlib
+          mingw-w64-x86_64-pkg-config
+          mingw-w64-x86_64-SDL2
+          mingw-w64-x86_64-libxml2
+          mingw-w64-x86_64-freetype
+          mingw-w64-x86_64-python3
+          mingw-w64-x86_64-ffmpeg
+          mingw-w64-x86_64-drmingw
+          mingw-w64-x86_64-qt5
+          mingw-w64-x86_64-openssl
+          mingw-w64-x86_64-nvidia-cg-toolkit
+          unzip
+          p7zip
+    - uses: actions/checkout@v2
+    - name: Fetch the source
+      run: git clone https://github.com/libretro/RetroArch.git
+    - shell: msys2 {0}
+      working-directory: RetroArch
+      run: |
+        ./configure --enable-steam --disable-qt
+        make -j4
+    - name: Setup working dir
+      run: mkdir working_dir
+    - name: Gather Qt libs
+      working-directory: RetroArch
+      run: ForEach ($l in $(msys2 -c ntldd.exe -R 'imageformats/*dll' | grep mingw64 | sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}
+    - name: Gather the other libs
+      working-directory: RetroArch
+      run: ForEach ($l in $(msys2 -c ntldd.exe -R '*.exe'|grep mingw64|sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}   
+    - shell: msys2 {0}
+      working-directory: RetroArch/libretro-common/audio/dsp_filters
+      run: make
+    - shell: msys2 {0}
+      working-directory: RetroArch/gfx/video_filters
+      run: make
+#    - name: Free up some disk space
+#      working-directory: RetroArch
+#      run: rm -rf .git && pacman -Rsu --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl
+    - name: Create debug exe and strip regular exe
+      working-directory: RetroArch
+      run: cp retroarch.exe retroarch_debug.exe && strip.exe -s retroarch.exe
+    - name: Move executables to working dir (libs are already there)
+      working-directory: RetroArch
+      run: mv *.exe ../working_dir
+    - shell: msys2 {0}
+      working-directory: working_dir
+      run: windeployqt --debug --no-patchqt --no-translations retroarch.exe
+    - name: Zip just the executables and libs
+      working-directory: working_dir
+      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Update-Pack.7z *.exe *dll
+    - name: Upload Update Pack
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: working_dir/RetroArch-Win-x86_64-Nightly_Update-Pack.7z
+        tag: Steam
+        asset_name: RetroArch-Win-x86_64-Nightly_Update-Pack.7z
+        overwrite: true
+    - name: Download assets package from previous job
+      uses: actions/download-artifact@v2
+      with:
+        name: assets.7z
+    - shell: msys2 {0}
+      working-directory: working_dir
+      run: mv ../assets.7z ./ && 7z x assets.7z && rm -rf assets.7z RetroArch-Win-x86_64-Nightly_Update-Pack.7z filters/audio/*.so filters/video/*.so
+    - name: Copy filters to assets dir
+      run: mv RetroArch/libretro-common/audio/dsp_filters/*dll working_dir/filters/audio && mv RetroArch/gfx/video_filters/*dll working_dir/filters/video
+    - name: Zip the full release
+      working-directory: working_dir
+      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Full.7z *
+    - name: Upload RetroArch release bundle
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: working_dir/RetroArch-Win-x86_64-Nightly_Full.7z
+        tag: Steam
+        asset_name: RetroArch-Win-x86_64-Nightly_Full.7z
+        overwrite: true
+    - shell: msys2 {0}
+      run: rm -rf working_dir && mkdir RetroArch/angle
+#    - name: Reinstall necessary packages
+#      run: msys2do pacman -S --noconfirm --disable-download-timeout --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl    
+    - shell: msys2 {0}
+      working-directory: RetroArch
+      run: ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl && make
+    - name: Gather resources
+      working-directory: RetroArch/angle
+      run: mv ../retroarch_angle.exe ./ && mv ../pkg/windows/x86_64/libEGL.dll ./ && mv ../pkg/windows/x86_64/libGLESv2.dll ./
+    - name: Zip the ANGLE bundle
+      working-directory: RetroArch/angle
+      run: 7z a -mx=9 RetroArch-ANGLE-x86_64-Nightly_Add-on.7z *
+    - name: Upload ANGLE release bundle
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
+        tag: Steam
+        asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
+        overwrite: true                

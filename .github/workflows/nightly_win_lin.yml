@@ -84,8 +84,8 @@ jobs:
       run: |
         mkdir cores
         cd cores
-        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/pcsx_rearmed_libretro.dll.zip && unzip -o pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro-SOURCE.txt && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
-        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && rm mesen_libretro-SOURCE.txt && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/pcsx_rearmed_libretro.dll.zip && unzip -o pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro.dll.zip && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
     - name: Zip it up!
       run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' cores.7z *
     - name: Upload Windows assets bundle
@@ -207,7 +207,7 @@ jobs:
         overwrite: true        
         
   Windows:
-    name: RetroArch Itch.io Nightly
+    name: RetroArch Itch.io Nightly Windows
     needs: Assets
     runs-on: windows-latest
 
@@ -324,7 +324,7 @@ jobs:
         overwrite: true
 
   Windows_Steam:
-    name: RetroArch Steam Nightly
+    name: RetroArch Steam Nightly Windows
     needs: Assets
     runs-on: windows-latest
 
@@ -441,7 +441,7 @@ jobs:
         overwrite: true
 
   Windows_Steam_Playtest:
-    name: RetroArch Playtest Steam Nightly
+    name: RetroArch Playtest Steam Nightly Windows
     needs: Assets
     runs-on: windows-latest
 

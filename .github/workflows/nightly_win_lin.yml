@@ -83,7 +83,14 @@ jobs:
       run: |
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/pcsx_rearmed_libretro.dll.zip && unzip -o pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro.dll.zip && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
         wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
-        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen-s_libretro.dll.zip && unzip -o mesen-s_libretro.dll.zip && echo https://github.com/SourMesen/Mesen-S >> mesen-s_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen-S/master/LICENSE && mv LICENSE mesen-s_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen-s_libretro.dll.zip && unzip -o mesen-s_libretro.dll.zip && rm mesen-s_libretro.dll.zip && echo https://github.com/SourMesen/Mesen-S >> mesen-s_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen-S/master/LICENSE && mv LICENSE mesen-s_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/kronos_libretro.dll.zip && unzip -o kronos_libretro.dll.zip && rm kronos_libretro.dll.zip && echo https://github.com/libretro/yabause >> kronos_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/yabause/master/yabause/COPYING && mv COPYING kronos_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/fbneo_libretro.dll.zip && unzip -o fbneo_libretro.dll.zip && rm fbneo_libretro.dll.zip && echo https://github.com/libretro/FBNeo >> fbneo_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/finalburnneo/FBNeo/master/src/license.txt && mv license.txt fbneo_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/genesis_plus_gx_libretro.dll.zip && unzip -o genesis_plus_gx_libretro.dll.zip && rm genesis_plus_gx_libretro.dll.zip && echo https://github.com/libretro/Genesis-Plus-GX >> genesis_plus_gx_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/Genesis-Plus-GX/master/LICENSE.txt && mv LICENSE.txt genesis_plus_gx_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/mgba_libretro.dll.zip && unzip -o mgba_libretro.dll.zip && rm mgba_libretro.dll.zip && echo https://github.com/libretro/mgba >> mgba_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mgba/master/LICENSE && mv LICENSE mgba_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/parallel_n64_libretro.dll.zip && unzip -o parallel_n64_libretro.dll.zip && rm parallel_n64_libretro.dll.zip && echo https://github.com/libretro/parallel-n64 >> parallel_n64_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mupen64plus-libretro-nx/develop/LICENSE && mv LICENSE parallel_n64_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/stella_libretro.dll.zip && unzip -o stella_libretro.dll.zip && rm stella_libretro.dll.zip && echo https://github.com/stella-emu/stella >> stella_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/stella-emu/stella/master/License.txt && mv License.txt stella_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/sameboy_libretro.dll.zip && unzip -o sameboy_libretro.dll.zip && rm sameboy_libretro.dll.zip && echo https://github.com/libretro/SameBoy >> sameboy_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/SameBoy/buildbot/LICENSE && mv LICENSE sameboy_libretro-LICENSE.txt
     - name: Zip it up!
       run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' cores.7z *
     - name: Upload Windows assets bundle
@@ -353,7 +360,7 @@ jobs:
     - shell: msys2 {0}
       working-directory: RetroArch
       run: |
-        ./configure --enable-steam --disable-qt
+        ./configure --enable-qt --enable-steam
         make -j8
     - name: Setup working dir
       run: mkdir working_dir
@@ -470,8 +477,8 @@ jobs:
     - shell: msys2 {0}
       working-directory: RetroArch
       run: |
-        ./configure --enable-steam --disable-qt
-        make -j4
+        ./configure --enable-qt --enalbe-steam
+        make -j8
     - name: Setup working dir
       run: mkdir working_dir
     - name: Gather Qt libs

@@ -440,7 +440,7 @@ jobs:
         asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
         overwrite: true
 
-Windows_SteamPlaytest:
+  Windows_Steam_Playtest:
     name: RetroArch Playtest Steam Nightly
     needs: Assets
     runs-on: windows-latest

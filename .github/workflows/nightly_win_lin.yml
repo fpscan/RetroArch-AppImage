@@ -477,7 +477,7 @@ jobs:
     - shell: msys2 {0}
       working-directory: RetroArch
       run: |
-        ./configure --enable-qt --enalbe-steam
+        ./configure --enable-qt --enable-steam
         make -j8
     - name: Setup working dir
       run: mkdir working_dir

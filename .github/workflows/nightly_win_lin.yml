@@ -94,7 +94,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: RetroArch-Linux-x86_64-Nightly.AppImage
-        tag: Itch.io
+        tag: Itch
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true
         
@@ -119,7 +119,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: RetroArch-Linux-x86_64-Nightly.AppImage
-        tag: Itch.io
+        tag: Itch
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true
 
@@ -173,8 +173,8 @@ jobs:
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true        
         
-  Windows_Itch-io:
-    name: Build RetroArch Nightly for Itch.io Windows
+  Windows:
+    name: Build RetroArch Nightly
     needs: Assets
     runs-on: windows-latest
 
@@ -200,6 +200,7 @@ jobs:
           mingw-w64-x86_64-drmingw
           mingw-w64-x86_64-qt5
           mingw-w64-x86_64-openssl
+          mingw-w64-x86_64-nvidia-cg-toolkit
           unzip
           p7zip
     - uses: actions/checkout@v2
@@ -244,7 +245,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: working_dir/RetroArch-Win-x86_64-Nightly_Update-Pack.7z
-        tag: Nightlies
+        tag: Itch
         asset_name: RetroArch-Win-x86_64-Nightly_Update-Pack.7z
         overwrite: true
     - name: Download assets package from previous job
@@ -264,7 +265,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: working_dir/RetroArch-Win-x86_64-Nightly_Full.7z
-        tag: Nightlies
+        tag: Itch
         asset_name: RetroArch-Win-x86_64-Nightly_Full.7z
         overwrite: true
     - shell: msys2 {0}
@@ -285,12 +286,12 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        tag: Itch.io
+        tag: Itch
         asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
         overwrite: true
 
   Windows_Steam:
-    name: Build RetroArch Nightly for Steam Windows
+    name: Build RetroArch Nightly
     needs: Assets
     runs-on: windows-latest
 
@@ -316,6 +317,7 @@ jobs:
           mingw-w64-x86_64-drmingw
           mingw-w64-x86_64-qt5
           mingw-w64-x86_64-openssl
+          mingw-w64-x86_64-nvidia-cg-toolkit
           unzip
           p7zip
     - uses: actions/checkout@v2
@@ -325,7 +327,7 @@ jobs:
       working-directory: RetroArch
       run: |
         ./configure --enable-steam --disable-qt
-        make -j4
+        make -j8
     - name: Setup working dir
       run: mkdir working_dir
     - name: Gather Qt libs
@@ -351,7 +353,7 @@ jobs:
       run: mv *.exe ../working_dir
     - shell: msys2 {0}
       working-directory: working_dir
-      run: windeployqt --release --no-patchqt --no-translations retroarch.exe
+      run: windeployqt --debug --no-patchqt --no-translations retroarch.exe
     - name: Zip just the executables and libs
       working-directory: working_dir
       run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Update-Pack.7z *.exe *dll
@@ -389,7 +391,7 @@ jobs:
 #      run: msys2do pacman -S --noconfirm --disable-download-timeout --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl    
     - shell: msys2 {0}
       working-directory: RetroArch
-      run: ./configure --enable-angle --enable-dynamic_egl && make
+      run: ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl && make
     - name: Gather resources
       working-directory: RetroArch/angle
       run: mv ../retroarch_angle.exe ./ && mv ../pkg/windows/x86_64/libEGL.dll ./ && mv ../pkg/windows/x86_64/libGLESv2.dll ./
@@ -403,4 +405,4 @@ jobs:
         file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
         tag: Steam
         asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        overwrite: true
+        overwrite: true        

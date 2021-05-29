@@ -238,9 +238,9 @@ jobs:
         name: assets.7z
     - shell: msys2 {0}
       working-directory: working_dir
-      run: mv ../assets.7z ./ && 7z x assets.7z && rm -rf assets.7z RetroArch-Win-x86_64-Nightly_Update-Pack.7z filters/audio/*.so filters/video/*.so
+      run: mv ../assets.7z ./ && 7z x assets.7z && rm -rf assets.7z RetroArch-Win-x86_64-Nightly_Update-Pack.7z filters/audio/*.so filters/video/*.so -y
     - name: Copy filters to assets dir
-      run: mv RetroArch/libretro-common/audio/dsp_filters/*dll working_dir/filters/audio && mv RetroArch/gfx/video_filters/*dll working_dir/filters/video
+      run: mv RetroArch/libretro-common/audio/dsp_filters/*dll working_dir/filters/audio && mv RetroArch/gfx/video_filters/*dll working_dir/filters/video -y
     - name: Zip the full release
       working-directory: working_dir
       run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Full.7z *

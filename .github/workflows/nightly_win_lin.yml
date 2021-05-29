@@ -73,13 +73,13 @@ jobs:
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage.config.7z
         overwrite: true
 
-  Playtest_Cores:
-    name: Collect Cores for Steam Playtest
+  Playtest_Windows_Cores:
+    name: Collect Cores for Steam Playtest Windows
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
-    - name: fetch cores
+    - name: fetch windows cores
       run: |
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/pcsx_rearmed_libretro.dll.zip && unzip -o pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro.dll.zip && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
         wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
@@ -87,6 +87,7 @@ jobs:
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/kronos_libretro.dll.zip && unzip -o kronos_libretro.dll.zip && rm kronos_libretro.dll.zip && echo https://github.com/libretro/yabause >> kronos_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/yabause/master/yabause/COPYING && mv COPYING kronos_libretro-LICENSE.txt
         wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/fbneo_libretro.dll.zip && unzip -o fbneo_libretro.dll.zip && rm fbneo_libretro.dll.zip && echo https://github.com/libretro/FBNeo >> fbneo_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/finalburnneo/FBNeo/master/src/license.txt && mv license.txt fbneo_libretro-LICENSE.txt
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/genesis_plus_gx_libretro.dll.zip && unzip -o genesis_plus_gx_libretro.dll.zip && rm genesis_plus_gx_libretro.dll.zip && echo https://github.com/libretro/Genesis-Plus-GX >> genesis_plus_gx_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/Genesis-Plus-GX/master/LICENSE.txt && mv LICENSE.txt genesis_plus_gx_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/genesis_plus_gx_wide_libretro.dll.zip && unzip -o genesis_plus_gx_wide_libretro.dll.zip && rm genesis_plus_gx_wide_libretro.dll.zip
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/mgba_libretro.dll.zip && unzip -o mgba_libretro.dll.zip && rm mgba_libretro.dll.zip && echo https://github.com/libretro/mgba >> mgba_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mgba/master/LICENSE && mv LICENSE mgba_libretro-LICENSE.txt
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/parallel_n64_libretro.dll.zip && unzip -o parallel_n64_libretro.dll.zip && rm parallel_n64_libretro.dll.zip && echo https://github.com/libretro/parallel-n64 >> parallel_n64_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mupen64plus-libretro-nx/develop/LICENSE && mv LICENSE parallel_n64_libretro-LICENSE.txt
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/stella_libretro.dll.zip && unzip -o stella_libretro.dll.zip && rm stella_libretro.dll.zip && echo https://github.com/stella-emu/stella >> stella_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/stella-emu/stella/master/License.txt && mv License.txt stella_libretro-LICENSE.txt
@@ -96,16 +97,51 @@ jobs:
     - name: Upload Windows assets bundle
       uses: actions/upload-artifact@v2
       with:
-        name: cores.7z
-        path: cores.7z
+        name: windows_cores.7z
+        path: windows_cores.7z
     - name: Upload cores
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: cores.7z
+        file: windows_cores.7z
         tag: Playtest
-        asset_name: cores.7z
-        overwrite: true        
+        asset_name: windows_cores.7z
+        overwrite: true
+        
+  Playtest_Linux_Cores:
+    name: Collect Cores for Steam Playtest Linux
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: fetch linux cores
+      run: |
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/pcsx_rearmed_libretro.so.zip && unzip -o pcsx_rearmed_libretro.so.zip && rm pcsx_rearmed_libretro.so.zip && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/mesen_libretro.so.zip && unzip -o mesen_libretro.so.zip && rm mesen_libretro.so.zip && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/mesen-s_libretro.so.zip && unzip -o mesen-s_libretro.so.zip && rm mesen-s_libretro.so.zip && echo https://github.com/SourMesen/Mesen-S >> mesen-s_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen-S/master/LICENSE && mv LICENSE mesen-s_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/kronos_libretro.so.zip && unzip -o kronos_libretro.so.zip && rm kronos_libretro.so.zip && echo https://github.com/libretro/yabause >> kronos_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/yabause/master/yabause/COPYING && mv COPYING kronos_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/fbneo_libretro.so.zip && unzip -o fbneo_libretro.so.zip && rm fbneo_libretro.so.zip && echo https://github.com/libretro/FBNeo >> fbneo_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/finalburnneo/FBNeo/master/src/license.txt && mv license.txt fbneo_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/genesis_plus_gx_libretro.so.zip && unzip -o genesis_plus_gx_libretro.so.zip && rm genesis_plus_gx_libretro.so.zip && echo https://github.com/libretro/Genesis-Plus-GX >> genesis_plus_gx_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/Genesis-Plus-GX/master/LICENSE.txt && mv LICENSE.txt genesis_plus_gx_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/genesis_plus_gx_wide_libretro.so.zip && unzip -o genesis_plus_gx_wide_libretro.so.zip && rm genesis_plus_gx_wide_libretro.so.zip
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/mgba_libretro.so.zip && unzip -o mgba_libretro.so.zip && rm mgba_libretro.so.zip && echo https://github.com/libretro/mgba >> mgba_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mgba/master/LICENSE && mv LICENSE mgba_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/parallel_n64_libretro.so.zip && unzip -o parallel_n64_libretro.so.zip && rm parallel_n64_libretro.so.zip && echo https://github.com/libretro/parallel-n64 >> parallel_n64_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mupen64plus-libretro-nx/develop/LICENSE && mv LICENSE parallel_n64_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip && unzip -o stella_libretro.so.zip && rm stella_libretro.so.zip && echo https://github.com/stella-emu/stella >> stella_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/stella-emu/stella/master/License.txt && mv License.txt stella_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/sameboy_libretro.so.zip && unzip -o sameboy_libretro.so.zip && rm sameboy_libretro.so.zip && echo https://github.com/libretro/SameBoy >> sameboy_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/SameBoy/buildbot/LICENSE && mv LICENSE sameboy_libretro-LICENSE.txt
+    - name: Zip it up!
+      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' cores.7z *
+    - name: Upload Linux assets bundle
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux_cores.7z
+        path: linux_cores.7z
+    - name: Upload cores
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: linux_cores.7z
+        tag: Playtest
+        asset_name: linux_cores.7z
+        overwrite: true    
 
   Linux_Steam:
     name: RetroArch Steam Nightly Linux
@@ -156,237 +192,4 @@ jobs:
         tag: Steam
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true        
-        
-  Windows_Steam:
-    name: RetroArch Steam Nightly Windows
-    needs: Assets
-    runs-on: windows-latest
-
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          base-devel
-          git
-          wget
-          make
-          mingw-w64-x86_64-binutils
-          mingw-w64-x86_64-toolchain
-          mingw-w64-x86_64-ntldd
-          mingw-w64-x86_64-zlib
-          mingw-w64-x86_64-pkg-config
-          mingw-w64-x86_64-SDL2
-          mingw-w64-x86_64-libxml2
-          mingw-w64-x86_64-freetype
-          mingw-w64-x86_64-python3
-          mingw-w64-x86_64-ffmpeg
-          mingw-w64-x86_64-drmingw
-          mingw-w64-x86_64-qt5
-          mingw-w64-x86_64-openssl
-          mingw-w64-x86_64-nvidia-cg-toolkit
-          unzip
-          p7zip
-    - uses: actions/checkout@v2
-    - name: Fetch the source
-      run: git clone https://github.com/libretro/RetroArch.git
-    - shell: msys2 {0}
-      working-directory: RetroArch
-      run: |
-        ./configure --enable-qt --enable-steam
-        make -j8
-    - name: Setup working dir
-      run: mkdir working_dir
-    - name: Gather Qt libs
-      working-directory: RetroArch
-      run: ForEach ($l in $(msys2 -c ntldd.exe -R 'imageformats/*dll' | grep mingw64 | sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}
-    - name: Gather the other libs
-      working-directory: RetroArch
-      run: ForEach ($l in $(msys2 -c ntldd.exe -R '*.exe'|grep mingw64|sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}   
-    - shell: msys2 {0}
-      working-directory: RetroArch/libretro-common/audio/dsp_filters
-      run: make
-    - shell: msys2 {0}
-      working-directory: RetroArch/gfx/video_filters
-      run: make
-#    - name: Free up some disk space
-#      working-directory: RetroArch
-#      run: rm -rf .git && pacman -Rsu --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl
-    - name: Create debug exe and strip regular exe
-      working-directory: RetroArch
-      run: cp retroarch.exe retroarch_debug.exe && strip.exe -s retroarch.exe
-    - name: Move executables to working dir (libs are already there)
-      working-directory: RetroArch
-      run: mv *.exe ../working_dir
-    - shell: msys2 {0}
-      working-directory: working_dir
-      run: windeployqt --debug --no-patchqt --no-translations retroarch.exe
-    - name: Zip just the executables and libs
-      working-directory: working_dir
-      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Update-Pack.7z *.exe *dll
-    - name: Upload Update Pack
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: working_dir/RetroArch-Win-x86_64-Nightly_Update-Pack.7z
-        tag: Steam
-        asset_name: RetroArch-Win-x86_64-Nightly_Update-Pack.7z
-        overwrite: true
-    - name: Download assets package from previous job
-      uses: actions/download-artifact@v2
-      with:
-        name: assets.7z
-    - shell: msys2 {0}
-      working-directory: working_dir
-      run: mv ../assets.7z ./ && 7z x assets.7z && rm -rf assets.7z RetroArch-Win-x86_64-Nightly_Update-Pack.7z filters/audio/*.so filters/video/*.so -y
-    - name: Copy filters to assets dir
-      run: mv RetroArch/libretro-common/audio/dsp_filters/*dll working_dir/filters/audio && mv RetroArch/gfx/video_filters/*dll working_dir/filters/video -y
-    - name: Zip the full release
-      working-directory: working_dir
-      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Full.7z *
-    - name: Upload RetroArch release bundle
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: working_dir/RetroArch-Win-x86_64-Nightly_Full.7z
-        tag: Steam
-        asset_name: RetroArch-Win-x86_64-Nightly_Full.7z
-        overwrite: true
-    - shell: msys2 {0}
-      run: rm -rf working_dir && mkdir RetroArch/angle
-#    - name: Reinstall necessary packages
-#      run: msys2do pacman -S --noconfirm --disable-download-timeout --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl    
-    - shell: msys2 {0}
-      working-directory: RetroArch
-      run: ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl && make
-    - name: Gather resources
-      working-directory: RetroArch/angle
-      run: mv ../retroarch_angle.exe ./ && mv ../pkg/windows/x86_64/libEGL.dll ./ && mv ../pkg/windows/x86_64/libGLESv2.dll ./
-    - name: Zip the ANGLE bundle
-      working-directory: RetroArch/angle
-      run: 7z a -mx=9 RetroArch-ANGLE-x86_64-Nightly_Add-on.7z *
-    - name: Upload ANGLE release bundle
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        tag: Steam
-        asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        overwrite: true
-
-  Windows_Steam_Playtest:
-    name: RetroArch Playtest Steam Nightly Windows
-    needs: Assets
-    runs-on: windows-latest
-
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          base-devel
-          git
-          wget
-          make
-          mingw-w64-x86_64-binutils
-          mingw-w64-x86_64-toolchain
-          mingw-w64-x86_64-ntldd
-          mingw-w64-x86_64-zlib
-          mingw-w64-x86_64-pkg-config
-          mingw-w64-x86_64-SDL2
-          mingw-w64-x86_64-libxml2
-          mingw-w64-x86_64-freetype
-          mingw-w64-x86_64-python3
-          mingw-w64-x86_64-ffmpeg
-          mingw-w64-x86_64-drmingw
-          mingw-w64-x86_64-qt5
-          mingw-w64-x86_64-openssl
-          mingw-w64-x86_64-nvidia-cg-toolkit
-          unzip
-          p7zip
-    - uses: actions/checkout@v2
-    - name: Fetch the source
-      run: git clone https://github.com/libretro/RetroArch.git
-    - shell: msys2 {0}
-      working-directory: RetroArch
-      run: |
-        ./configure --enable-qt --enable-steam
-        make -j8
-    - name: Setup working dir
-      run: mkdir working_dir
-    - name: Gather Qt libs
-      working-directory: RetroArch
-      run: ForEach ($l in $(msys2 -c ntldd.exe -R 'imageformats/*dll' | grep mingw64 | sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}
-    - name: Gather the other libs
-      working-directory: RetroArch
-      run: ForEach ($l in $(msys2 -c ntldd.exe -R '*.exe'|grep mingw64|sed -e 's/^[ \t]*//'|cut -d' ' -f3)){cp "$l" ../working_dir}   
-    - shell: msys2 {0}
-      working-directory: RetroArch/libretro-common/audio/dsp_filters
-      run: make
-    - shell: msys2 {0}
-      working-directory: RetroArch/gfx/video_filters
-      run: make
-#    - name: Free up some disk space
-#      working-directory: RetroArch
-#      run: rm -rf .git && pacman -Rsu --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl
-    - name: Create debug exe and strip regular exe
-      working-directory: RetroArch
-      run: cp retroarch.exe retroarch_debug.exe && strip.exe -s retroarch.exe
-    - name: Move executables to working dir (libs are already there)
-      working-directory: RetroArch
-      run: mv *.exe ../working_dir
-    - shell: msys2 {0}
-      working-directory: working_dir
-      run: windeployqt --debug --no-patchqt --no-translations retroarch.exe
-    - name: Zip just the executables and libs
-      working-directory: working_dir
-      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Update-Pack.7z *.exe *dll
-    - name: Upload Update Pack
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: working_dir/RetroArch-Win-x86_64-Nightly_Update-Pack.7z
-        tag: Steam
-        asset_name: RetroArch-Win-x86_64-Nightly_Update-Pack.7z
-        overwrite: true
-    - name: Download assets package from previous job
-      uses: actions/download-artifact@v2
-      with:
-        name: assets.7z
-    - shell: msys2 {0}
-      working-directory: working_dir
-      run: mv ../assets.7z ./ && 7z x assets.7z && rm -rf assets.7z RetroArch-Win-x86_64-Nightly_Update-Pack.7z filters/audio/*.so filters/video/*.so
-    - name: Copy filters to assets dir
-      run: mv RetroArch/libretro-common/audio/dsp_filters/*dll working_dir/filters/audio && mv RetroArch/gfx/video_filters/*dll working_dir/filters/video
-    - name: Zip the full release
-      working-directory: working_dir
-      run: 7z a -mx=9 RetroArch-Win-x86_64-Nightly_Full.7z *
-    - name: Upload RetroArch release bundle
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: working_dir/RetroArch-Win-x86_64-Nightly_Full.7z
-        tag: Steam
-        asset_name: RetroArch-Win-x86_64-Nightly_Full.7z
-        overwrite: true
-    - shell: msys2 {0}
-      run: rm -rf working_dir && mkdir RetroArch/angle
-#    - name: Reinstall necessary packages
-#      run: msys2do pacman -S --noconfirm --disable-download-timeout --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-openssl    
-    - shell: msys2 {0}
-      working-directory: RetroArch
-      run: ./configure --enable-steam --disable-qt --enable-angle --enable-dynamic_egl && make
-    - name: Gather resources
-      working-directory: RetroArch/angle
-      run: mv ../retroarch_angle.exe ./ && mv ../pkg/windows/x86_64/libEGL.dll ./ && mv ../pkg/windows/x86_64/libGLESv2.dll ./
-    - name: Zip the ANGLE bundle
-      working-directory: RetroArch/angle
-      run: 7z a -mx=9 RetroArch-ANGLE-x86_64-Nightly_Add-on.7z *
-    - name: Upload ANGLE release bundle
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: RetroArch/angle/RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        tag: Steam
-        asset_name: RetroArch-ANGLE-x86_64-Nightly_Add-on.7z
-        overwrite: true                
+                      

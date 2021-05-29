@@ -93,7 +93,7 @@ jobs:
         wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/stella_libretro.dll.zip && unzip -o stella_libretro.dll.zip && rm stella_libretro.dll.zip && echo https://github.com/stella-emu/stella >> stella_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/stella-emu/stella/master/License.txt && mv License.txt stella_libretro-LICENSE.txt
         wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/sameboy_libretro.dll.zip && unzip -o sameboy_libretro.dll.zip && rm sameboy_libretro.dll.zip && echo https://github.com/libretro/SameBoy >> sameboy_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/SameBoy/buildbot/LICENSE && mv LICENSE sameboy_libretro-LICENSE.txt
     - name: Zip it up!
-      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' cores.7z *
+      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' windows_cores.7z *
     - name: Upload Windows assets bundle
       uses: actions/upload-artifact@v2
       with:
@@ -128,7 +128,7 @@ jobs:
         wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip && unzip -o stella_libretro.so.zip && rm stella_libretro.so.zip && echo https://github.com/stella-emu/stella >> stella_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/stella-emu/stella/master/License.txt && mv License.txt stella_libretro-LICENSE.txt
         wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/sameboy_libretro.so.zip && unzip -o sameboy_libretro.so.zip && rm sameboy_libretro.so.zip && echo https://github.com/libretro/SameBoy >> sameboy_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/SameBoy/buildbot/LICENSE && mv LICENSE sameboy_libretro-LICENSE.txt
     - name: Zip it up!
-      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' cores.7z *
+      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' linux_cores.7z *
     - name: Upload Linux assets bundle
       uses: actions/upload-artifact@v2
       with:
